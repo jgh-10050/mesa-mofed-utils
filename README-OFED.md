@@ -13,77 +13,115 @@ For v1.3.4, the pkgs repo tag is v1.3.0-11-gffdc9f1.
 git checkout -b v1.3.4 v1.3.0-11-gffdc9f1
 cd v1.3.4
 ```
+### Update kernel build configuration
+The following is a list of kernel config parameters that should be set to enable the required Infiniband support.  Edit the *kernel/build/config-amd64* file and update any of the values that differ:
+```
+CONFIG_NET_VENDOR_MELLANOX=y
+CONFIG_MLX4_EN=y
+CONFIG_MLX4_EN_DCB=y
+CONFIG_MLX4_CORE=m
+CONFIG_MLX4_DEBUG=y
+CONFIG_MLX4_CORE_GEN2=y
+CONFIG_MLX5_CORE=m
+CONFIG_MLX5_ACCEL=y
+CONFIG_MLX5_FPGA=y
+CONFIG_MLX5_CORE_EN=y
+CONFIG_MLX5_EN_ARFS=y
+CONFIG_MLX5_EN_RXNFC=y
+CONFIG_MLX5_MPFS=y
+CONFIG_MLX5_ESWITCH=y
+CONFIG_MLX5_BRIDGE=y
+CONFIG_MLX5_CLS_ACT=y
+CONFIG_MLX5_TC_SAMPLE=y
+CONFIG_MLX5_CORE_EN_DCB=y
+CONFIG_MLX5_CORE_IPOIB=y
+# CONFIG_MLX5_FPGA_IPSEC is not set
+# CONFIG_MLX5_IPSEC is not set
+CONFIG_MLX5_SW_STEERING=y
+CONFIG_MLX5_SF=y
+CONFIG_MLXSW_CORE=m
+CONFIG_MLXSW_CORE_HWMON=y
+CONFIG_MLXSW_CORE_THERMAL=y
+CONFIG_MLXSW_PCI=m
+CONFIG_MLXSW_I2C=m
+CONFIG_MLXSW_SPECTRUM=m
+CONFIG_MLXSW_SPECTRUM_DCB=m
+CONFIG_MLXSW_MINIMAL=m
+CONFIG_MLXFW=m
+# CONFIG_I2C_MLXCPLD is not set
+# CONFIG_LEDS_MLXCPLD is not set
+# CONFIG_LEDS_MLXREG is not set
+CONFIG_INFINIBAND=m
+CONFIG_INFINIBAND_USER_MAD=m
+CONFIG_INFINIBAND_USER_ACCESS=m
+CONFIG_INFINIBAND_ADDR_TRANS=y
+CONFIG_INFINIBAND_VIRT_DMA=y
+# CONFIG_INFINIBAND_MTHCA is not set
+CONFIG_INFINIBAND_IRDMA=m
+CONFIG_MLX4_INFINIBAND=m
+CONFIG_MLX5_INFINIBAND=m
+CONFIG_INFINIBAND_OCRDMA=y
+# CONFIG_INFINIBAND_VMWARE_PVRDMA is not set
+# CONFIG_INFINIBAND_BNXT_RE is not set
+# CONFIG_INFINIBAND_QEDR is not set
+CONFIG_INFINIBAND_RDMAVT=m
+CONFIG_INFINIBAND_IPOIB=m
+CONFIG_INFINIBAND_IPOIB_CM=y
+CONFIG_INFINIBAND_IPOIB_DEBUG=y
+# CONFIG_INFINIBAND_SRP is not set
+# CONFIG_INFINIBAND_ISER is not set
+CONFIG_INFINIBAND_RTRS_CLIENT=y
+CONFIG_INFINIBAND_RTRS_SERVER=m
+# CONFIG_INFINIBAND_OPA_VNIC is not set
+CONFIG_MLX_PLATFORM=m
+# CONFIG_MELLANOX_PLATFORM is not set
+CONFIG_SECURITY_INFINIBAND=y
+```
 
-### Apply the kernel configuration patch
-To enable infiniband OFED in the kernel image build, apply the following patch to kernel/build/config-amd64:
+If you are building a v1.3.4 kernel image, you can instead simply run the following to apply a patch to *kernel/build/config-amd64*:
 ```
 diff --git a/kernel/build/config-amd64 b/kernel/build/config-amd64
-index 9dd9a1e..8f2a0d9 100644
+index 341a7f5..ee12197 100644
 --- a/kernel/build/config-amd64
 +++ b/kernel/build/config-amd64
-@@ -868,6 +868,7 @@ CONFIG_EFI_PARTITION=y
- CONFIG_BLOCK_COMPAT=y
- CONFIG_BLK_MQ_PCI=y
- CONFIG_BLK_MQ_VIRTIO=y
-+CONFIG_BLK_MQ_RDMA=y
- CONFIG_BLK_PM=y
- CONFIG_BLOCK_HOLDER_DEPRECATED=y
- 
-@@ -996,6 +997,7 @@ CONFIG_XFRM_AH=y
- CONFIG_XFRM_ESP=y
- CONFIG_XFRM_IPCOMP=y
- # CONFIG_NET_KEY is not set
-+# CONFIG_SMC is not set
- # CONFIG_XDP_SOCKETS is not set
- CONFIG_INET=y
- CONFIG_IP_MULTICAST=y
-@@ -1463,6 +1465,7 @@ CONFIG_SCTP_COOKIE_HMAC_MD5=y
- # CONFIG_SCTP_COOKIE_HMAC_SHA1 is not set
- CONFIG_INET_SCTP_DIAG=y
- CONFIG_RDS=y
-+# CONFIG_RDS_RDMA is not set
- # CONFIG_RDS_TCP is not set
- # CONFIG_RDS_DEBUG is not set
- # CONFIG_TIPC is not set
-@@ -1941,6 +1944,7 @@ CONFIG_BLK_DEV_NVME=y
- # CONFIG_NVME_MULTIPATH is not set
- CONFIG_NVME_HWMON=y
- CONFIG_NVME_FABRICS=y
-+# CONFIG_NVME_RDMA is not set
- CONFIG_NVME_FC=y
- CONFIG_NVME_TCP=y
- # end of NVME Support
-@@ -2445,7 +2449,38 @@ CONFIG_NET_VENDOR_MARVELL=y
- CONFIG_SKY2=y
- # CONFIG_SKY2_DEBUG is not set
- # CONFIG_PRESTERA is not set
--# CONFIG_NET_VENDOR_MELLANOX is not set
-+CONFIG_NET_VENDOR_MELLANOX=y
-+CONFIG_MLX4_EN=m
-+CONFIG_MLX4_EN_DCB=y
+@@ -803,7 +803,7 @@ CONFIG_BASE_SMALL=0
+ CONFIG_MODULE_SIG_FORMAT=y
+ CONFIG_MODULES=y
+ # CONFIG_MODULE_FORCE_LOAD is not set
+-# CONFIG_MODULE_UNLOAD is not set
++CONFIG_MODULE_UNLOAD=y
+ CONFIG_MODVERSIONS=y
+ CONFIG_ASM_MODVERSIONS=y
+ CONFIG_MODULE_SRCVERSION_ALL=y
+@@ -2452,10 +2452,10 @@ CONFIG_SKY2=y
+ CONFIG_NET_VENDOR_MELLANOX=y
+ CONFIG_MLX4_EN=y
+ CONFIG_MLX4_EN_DCB=y
+-CONFIG_MLX4_CORE=y
 +CONFIG_MLX4_CORE=m
-+CONFIG_MLX4_DEBUG=y
-+CONFIG_MLX4_CORE_GEN2=y
+ CONFIG_MLX4_DEBUG=y
+ CONFIG_MLX4_CORE_GEN2=y
+-CONFIG_MLX5_CORE=y
 +CONFIG_MLX5_CORE=m
-+CONFIG_MLX5_ACCEL=y
-+CONFIG_MLX5_FPGA=y
-+CONFIG_MLX5_CORE_EN=y
-+CONFIG_MLX5_EN_ARFS=y
-+CONFIG_MLX5_EN_RXNFC=y
-+CONFIG_MLX5_MPFS=y
-+CONFIG_MLX5_ESWITCH=y
-+CONFIG_MLX5_BRIDGE=y
-+CONFIG_MLX5_CLS_ACT=y
-+CONFIG_MLX5_TC_SAMPLE=y
-+CONFIG_MLX5_CORE_EN_DCB=y
-+CONFIG_MLX5_CORE_IPOIB=y
-+# CONFIG_MLX5_FPGA_IPSEC is not set
-+# CONFIG_MLX5_IPSEC is not set
-+CONFIG_MLX5_SW_STEERING=y
+ CONFIG_MLX5_ACCEL=y
+ CONFIG_MLX5_FPGA=y
+ CONFIG_MLX5_CORE_EN=y
+@@ -2471,16 +2471,16 @@ CONFIG_MLX5_CORE_IPOIB=y
+ # CONFIG_MLX5_FPGA_IPSEC is not set
+ # CONFIG_MLX5_IPSEC is not set
+ CONFIG_MLX5_SW_STEERING=y
+-# CONFIG_MLX5_SF is not set
+-CONFIG_MLXSW_CORE=y
 +CONFIG_MLX5_SF=y
 +CONFIG_MLXSW_CORE=m
-+CONFIG_MLXSW_CORE_HWMON=y
-+CONFIG_MLXSW_CORE_THERMAL=y
+ CONFIG_MLXSW_CORE_HWMON=y
+ CONFIG_MLXSW_CORE_THERMAL=y
+-CONFIG_MLXSW_PCI=y
+-CONFIG_MLXSW_I2C=y
+-CONFIG_MLXSW_SPECTRUM=y
+-CONFIG_MLXSW_SPECTRUM_DCB=y
+-CONFIG_MLXSW_MINIMAL=y
+-CONFIG_MLXFW=y
 +CONFIG_MLXSW_PCI=m
 +CONFIG_MLXSW_I2C=m
 +CONFIG_MLXSW_SPECTRUM=m
@@ -93,40 +131,51 @@ index 9dd9a1e..8f2a0d9 100644
  CONFIG_NET_VENDOR_MICREL=y
  # CONFIG_KS8842 is not set
  # CONFIG_KS8851_MLL is not set
-@@ -4257,7 +4292,31 @@ CONFIG_LEDS_TRIGGERS=y
+@@ -4292,30 +4292,29 @@ CONFIG_LEDS_TRIGGERS=y
  # CONFIG_LEDS_TRIGGER_AUDIO is not set
  # CONFIG_LEDS_TRIGGER_TTY is not set
  # CONFIG_ACCESSIBILITY is not set
--# CONFIG_INFINIBAND is not set
+-CONFIG_INFINIBAND=y
+-# CONFIG_INFINIBAND_USER_MAD is not set
+-# CONFIG_INFINIBAND_USER_ACCESS is not set
 +CONFIG_INFINIBAND=m
 +CONFIG_INFINIBAND_USER_MAD=m
 +CONFIG_INFINIBAND_USER_ACCESS=m
-+CONFIG_INFINIBAND_ADDR_TRANS=m
-+CONFIG_INFINIBAND_VIRT_DMA=y
-+# CONFIG_INFINIBAND_MTHCA is not set
+ CONFIG_INFINIBAND_ADDR_TRANS=y
+ CONFIG_INFINIBAND_VIRT_DMA=y
+ # CONFIG_INFINIBAND_MTHCA is not set
+-# CONFIG_INFINIBAND_IRDMA is not set
+-# CONFIG_MLX4_INFINIBAND is not set
+-# CONFIG_MLX5_INFINIBAND is not set
+-# CONFIG_INFINIBAND_OCRDMA is not set
 +CONFIG_INFINIBAND_IRDMA=m
 +CONFIG_MLX4_INFINIBAND=m
 +CONFIG_MLX5_INFINIBAND=m
-+CONFIG_INFINIBAND_OCRDMA=m
-+# CONFIG_INFINIBAND_VMWARE_PVRDMA is not set
-+CONFIG_INFINIBAND_BNXT_RE=m
-+CONFIG_INFINIBAND_QEDR=m
++CONFIG_INFINIBAND_OCRDMA=y
+ # CONFIG_INFINIBAND_VMWARE_PVRDMA is not set
+ # CONFIG_INFINIBAND_BNXT_RE is not set
+ # CONFIG_INFINIBAND_QEDR is not set
+-# CONFIG_INFINIBAND_RDMAVT is not set
+-CONFIG_RDMA_RXE=y
 +CONFIG_INFINIBAND_RDMAVT=m
 +CONFIG_RDMA_RXE=m
-+CONFIG_RDMA_SIW=m
+ # CONFIG_RDMA_SIW is not set
+-CONFIG_INFINIBAND_IPOIB=y
+-# CONFIG_INFINIBAND_IPOIB_CM is not set
 +CONFIG_INFINIBAND_IPOIB=m
 +CONFIG_INFINIBAND_IPOIB_CM=y
-+CONFIG_INFINIBAND_IPOIB_DEBUG=y
-+# CONFIG_INFINIBAND_IPOIB_DEBUG_DATA is not set
-+CONFIG_INFINIBAND_SRP=m
-+CONFIG_INFINIBAND_ISER=m
-+CONFIG_INFINIBAND_RTRS_CLIENT=m
+ CONFIG_INFINIBAND_IPOIB_DEBUG=y
+-# CONFIG_INFINIBAND_IPOIB_DEBUG_DATA is not set
+ # CONFIG_INFINIBAND_SRP is not set
+ # CONFIG_INFINIBAND_ISER is not set
+-# CONFIG_INFINIBAND_RTRS_CLIENT is not set
+-# CONFIG_INFINIBAND_RTRS_SERVER is not set
++CONFIG_INFINIBAND_RTRS_CLIENT=y
 +CONFIG_INFINIBAND_RTRS_SERVER=m
-+CONFIG_INFINIBAND_OPA_VNIC=m
+ # CONFIG_INFINIBAND_OPA_VNIC is not set
  CONFIG_EDAC_ATOMIC_SCRUB=y
  CONFIG_EDAC_SUPPORT=y
- CONFIG_EDAC=y
-@@ -4530,7 +4589,7 @@ CONFIG_EEEPC_LAPTOP=y
+@@ -4589,7 +4588,7 @@ CONFIG_EEEPC_LAPTOP=y
  # CONFIG_SYSTEM76_ACPI is not set
  # CONFIG_TOPSTAR_LAPTOP is not set
  # CONFIG_I2C_MULTI_INSTANTIATE is not set
@@ -135,40 +184,16 @@ index 9dd9a1e..8f2a0d9 100644
  # CONFIG_INTEL_IPS is not set
  # CONFIG_INTEL_SCU_PCI is not set
  # CONFIG_INTEL_SCU_PLATFORM is not set
-@@ -4936,6 +4995,7 @@ CONFIG_CIFS_DEBUG=y
- # CONFIG_CIFS_DEBUG_DUMP_KEYS is not set
- CONFIG_CIFS_DFS_UPCALL=y
- # CONFIG_CIFS_SWN_UPCALL is not set
-+# CONFIG_CIFS_SMB_DIRECT is not set
- # CONFIG_CIFS_ROOT is not set
- # CONFIG_SMB_SERVER is not set
- CONFIG_SMBFS_COMMON=y
-@@ -5009,6 +5069,7 @@ CONFIG_KEYS=y
- CONFIG_SECURITY_DMESG_RESTRICT=y
+@@ -5071,7 +5070,7 @@ CONFIG_SECURITY_DMESG_RESTRICT=y
  CONFIG_SECURITY=y
  CONFIG_SECURITYFS=y
-+# CONFIG_SECURITY_INFINIBAND is not set
  CONFIG_SECURITY_NETWORK=y
+-# CONFIG_SECURITY_INFINIBAND is not set
++CONFIG_SECURITY_INFINIBAND=y
  CONFIG_SECURITY_NETWORK_XFRM=y
  # CONFIG_SECURITY_PATH is not set
-@@ -5735,6 +5796,7 @@ CONFIG_RUNTIME_TESTING_MENU=y
- # CONFIG_TEST_RHASHTABLE is not set
- # CONFIG_TEST_HASH is not set
- # CONFIG_TEST_IDA is not set
-+# CONFIG_TEST_PARMAN is not set
- # CONFIG_TEST_LKM is not set
- # CONFIG_TEST_BITOPS is not set
- # CONFIG_TEST_VMALLOC is not set
-@@ -5748,6 +5810,7 @@ CONFIG_RUNTIME_TESTING_MENU=y
- # CONFIG_TEST_STATIC_KEYS is not set
- # CONFIG_TEST_KMOD is not set
- # CONFIG_TEST_MEMCAT_P is not set
-+# CONFIG_TEST_OBJAGG is not set
- # CONFIG_TEST_STACKINIT is not set
- # CONFIG_TEST_MEMINIT is not set
- # CONFIG_TEST_FREE_PAGES is not set
+ # CONFIG_INTEL_TXT is not set
 ```
-### Make additional kernel configuration changes
 Enable or disable any additional build options by editing the *kernel/build/config-amd64* file.
 
 ### Log in to github ghcr.io registry
@@ -223,3 +248,42 @@ docker buildx create --driver docker-container  --driver-opt network=host  --bu
 make REGISTRY=ghcr.io USERNAME=<YOUR_GITHUB_USERID> PLATFORM=linux/amd64 PUSH=true TAG=1.3.4 TAG_SUFFIX=-ofed-5.15.92 installer
 ```
 When successful, this will push the kernel image to *ghcr.io/<YOUR_GITHUB_USERID>/installer:1.3.4-ofed-5.15.92*
+
+### Update Talos Machine Configuration
+After upgrading the workers in your cluster, you will need to add a list of the kernel modules for talos to load.  This is done by updating the machine config for the worker nodes.
+
+Updating talos node machine configuration directly:
+```
+machine:
+  kernel:
+    modules:
+      - name: mlx5_core
+      - name: mlx5_ib
+      - name: ib_core
+      - name: ib_uverbs
+      - name: ib_ipoib
+      - name: ib_umad
+      - name: ib_cm
+      - name: rdma_cm
+      - name: rdma_ucm
+      - name: mlxfw
+```
+Updating worker node configuration in the CAPI configPatches:
+```
+       - op: add
+         path: /machine/kernel
+         value: {}
+       - op: add
+         path: /machine/kernel/modules
+         value:
+         - name: mlx5_core
+         - name: mlx5_ib
+         - name: ib_core
+         - name: ib_uverbs
+         - name: ib_ipoib
+         - name: ib_umad
+         - name: ib_cm
+         - name: rdma_cm
+         - name: rdma_ucm
+         - name: mlxfw
+```
